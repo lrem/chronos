@@ -55,7 +55,7 @@ class Chronos(NSObject):
         self.menu = NSMenu.alloc().init()
         self._add_item('Stop work', 'idle:')
         for task in tasks:
-            self._add_item(task, 'start:')
+            self._add_item(task, 'start:' if task else '')
         self._add_item('Quit', 'terminate:')
         # Bind it to the status item
         self.statusitem.setMenu_(self.menu)
