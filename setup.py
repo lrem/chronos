@@ -13,9 +13,10 @@ OPTIONS = {
     'argv_emulation': True,
     'iconfile': 'clock.icns',
     'plist': {
-        'CFBundleShortVersionString': '0.1.0',
+        'CFBundleShortVersionString': '0.1',
         'NSHumanReadableCopyright': 'Remigiusz \'lRem\' Modrzejewski',
         'CFBundleIconFile': 'clock.icns',
+        'LSUIElement': '1',
         }
 }
 
