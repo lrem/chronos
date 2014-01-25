@@ -53,6 +53,7 @@ class Chronos(NSObject):
         There will additionally by items for stopping a task and quitting app.
         """
         self.menu = NSMenu.alloc().init()
+        self.indicator = self._add_item('Not working', '')
         self._add_item('Stop work', 'idle:')
         for task in tasks:
             self._add_item(task, 'start:' if task else '')
@@ -64,6 +65,7 @@ class Chronos(NSObject):
         menuitem = NSMenuItem.alloc().\
             initWithTitle_action_keyEquivalent_(label, handle, '')
         self.menu.addItem_(menuitem)
+        return menuitem
 
     def _setup_icon(self):
         statusbar = NSStatusBar.systemStatusBar()
@@ -85,12 +87,14 @@ class Chronos(NSObject):
         self._log_on_switch()
         self.current = 'idle'
         self.statusitem.setImage_(self.images['idle'])
+        self.indicator.setTitle_('Not working')
 
     def start_(self, ummm):
         self._log_on_switch()
         self.current = ummm.title()
         self.since = time.time()
         self.statusitem.setImage_(self.images['ticking'])
+        self.indicator.setTitle_(self.current)
 
     def _log_on_switch(self):
         if self.current is not 'idle':
@@ -102,6 +106,10 @@ class Chronos(NSObject):
 
     def tick_(self, notification):
         self.update_tasks()
+        if self.current is not 'idle':
+            self.indicator.setTitle_(self.current + ' for ' +
+                                     str(int((time.time()-self.since)/60)) +
+                                     ' minutes')
 
 
 def main():
