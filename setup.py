@@ -9,7 +9,15 @@ from setuptools import setup
 
 APP = ['chronos.py']
 DATA_FILES = ['idle.png', 'ticking.png']
-OPTIONS = {'argv_emulation': True}
+OPTIONS = {
+    'argv_emulation': True,
+    'iconfile': 'clock.icns',
+    'plist': {
+        'CFBundleShortVersionString': '0.1.0',
+        'NSHumanReadableCopyright': 'Remigiusz \'lRem\' Modrzejewski',
+        'CFBundleIconFile': 'clock.icns',
+        }
+}
 
 setup(
     app=APP,
