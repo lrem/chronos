@@ -66,8 +66,11 @@ class Chronos(NSObject):
         self.statusitem.setMenu_(self.menu)
 
     def _add_item(self, label, handle):
-        menuitem = NSMenuItem.alloc().\
-            initWithTitle_action_keyEquivalent_(label, handle, '')
+        if label is '':
+            menuitem = NSMenuItem.separatorItem()
+        else:
+            menuitem = NSMenuItem.alloc().\
+                initWithTitle_action_keyEquivalent_(label, handle, '')
         self.menu.addItem_(menuitem)
         return menuitem
 
