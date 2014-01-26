@@ -17,6 +17,9 @@ STATUS_IMAGES = {
     'ticking': 'ticking.png',
     }
 
+TASK_FILE = os.environ['HOME']+'/.tasks.txt'
+LOG_FILE = os.environ['HOME']+'/.tasks-log.csv'
+
 
 class Chronos(NSObject):
 
@@ -39,12 +42,11 @@ class Chronos(NSObject):
         self.timer.fire()
 
     def update_tasks(self):
-        path = os.environ['HOME']+'/tasks.txt'
-        if not os.path.exists(path):
+        if not os.path.exists(TASK_FILE):
             self._build_menu([])
             return
-        if os.stat(path).st_mtime > self.timestamp:
-            tasks = map(str.strip, open(path).readlines())
+        if os.stat(TASK_FILE).st_mtime > self.timestamp:
+            tasks = map(str.strip, open(TASK_FILE).readlines())
             self._build_menu(tasks)
 
     def _build_menu(self, tasks):
@@ -55,6 +57,8 @@ class Chronos(NSObject):
         self.menu = NSMenu.alloc().init()
         self.indicator = self._add_item('Not working', '')
         self._add_item('Stop work', 'idle:')
+        self._add_item('Edit tasks', 'edit:')
+        self._add_item('', '')
         for task in tasks:
             self._add_item(task, 'start:' if task else '')
         self._add_item('Quit', 'terminate:')
@@ -98,7 +102,7 @@ class Chronos(NSObject):
 
     def _log_on_switch(self):
         if self.current is not 'idle':
-            log = open(os.environ['HOME']+'/tasks-log.txt', 'a')
+            log = open(LOG_FILE, 'a')
             print >>log, self.current, ';', int(time.time() - self.since),\
                 ';', self.since,\
                 ';', time.strftime("%Y-%m-%d %H:%M",
@@ -110,6 +114,15 @@ class Chronos(NSObject):
             self.indicator.setTitle_(self.current + ' for ' +
                                      str(int((time.time()-self.since)/60)) +
                                      ' minutes')
+
+    def edit_(self, notification):
+        if not os.path.exists(TASK_FILE):
+            out = open(TASK_FILE, 'w')
+            print >>out, ('[ProjectA] Coding\n[ProjectA] Debugging\n\n'
+                          '[ProjectB] Research\n[ProjectB] Experiments\n'
+                          '[ProjectB] Write-up\n')
+            out.close()
+        os.system('open -t ' + TASK_FILE)
 
 
 def main():
