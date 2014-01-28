@@ -106,7 +106,11 @@ class Chronos(NSObject):
 
     def _log_on_switch(self):
         if self.current is not 'idle':
-            log = open(LOG_FILE, 'a')
+            if not os.path.exists(LOG_FILE):
+                log = open(LOG_FILE, 'w')
+                print >>log, "task ; duration ; epoch ; start"
+            else:
+                log = open(LOG_FILE, 'a')
             print >>log, self.current, ';', int(time.time() - self.since),\
                 ';', self.since,\
                 ';', time.strftime("%Y-%m-%d %H:%M",
