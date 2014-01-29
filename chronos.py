@@ -108,13 +108,22 @@ class Chronos(NSObject):
         if self.current is not 'idle':
             if not os.path.exists(LOG_FILE):
                 log = open(LOG_FILE, 'w')
-                print >>log, "task ; duration ; epoch ; start"
+                print >>log, "project;task;duration;epoch;start"
             else:
                 log = open(LOG_FILE, 'a')
-            print >>log, self.current, ';', int(time.time() - self.since),\
-                ';', self.since,\
-                ';', time.strftime("%Y-%m-%d %H:%M",
-                                   time.localtime(self.since))
+            try:
+                project, task = re.match('\[([^]]*)\](.*)',
+                                         self.current).groups()
+                project = project.strip()
+                task = task.strip()
+            except:
+                project, task = self.current, '-'
+            print >>log, ';'.join([project, task,
+                                   str(int(time.time() - self.since)),
+                                   str(self.since),
+                                   time.strftime("%Y-%m-%d %H:%M",
+                                                 time.localtime(self.since)),
+                                   ])
 
     def tick_(self, notification):
         self.update_tasks()
